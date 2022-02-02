@@ -3,10 +3,13 @@ title: "Haorui Sun Webpage"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
 This will be my personal website, eventually. 
 
-Link to homework 02 [homework_02](Homework_02.html)
+# Homework Gall
+
+## Homework 2
+[Homework 02](Homework_02.html)
+
+## Homework 3
+[Homework 03](homework_3.html)
