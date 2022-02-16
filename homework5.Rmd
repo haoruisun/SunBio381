@@ -1,0 +1,72 @@
+---
+title: "Homework 5"
+author: "Haorui Sun"
+date: "2/16/2022"
+output: html_document
+---
+
+# Q1
+```{r}
+# 1. Assign a single random integer between 3 and 10
+n_dims <- sample(3:10, 1)
+# Create a vector of consecutive integers
+vec <- 1:n_dims^2
+# Use the sample function to randomly reshuffle these values
+shuffled_vec <- sample(vec)
+# create a square matrix with these elements
+sq_matrix <- matrix(shuffled_vec, nrow=n_dims)
+# print out the matrix
+print(sq_matrix)
+# transpose the matrix
+t_matrix <- t(sq_matrix)
+# print out the transposed matrix
+print(t_matrix)
+# calculate the sum and the mean of the elements in the first row and the last row
+fst_sum <- sum(t_matrix[1,])
+fst_mean <- mean(t_matrix[1,])
+lst_sum <- sum(t_matrix[n_dims,])
+lst_mean <- mean(t_matrix[n_dims,])
+# calculate eigen value
+ev <- eigen(t_matrix)
+# Eigen values and vectors are complex numbers
+# find out the type of eigen values and vectors
+typeof(ev$values)
+typeof(ev$vectors)
+```
+
+# Q2
+```{r}
+# 2. Create a list with the following named elements
+# 4 x 4 matrix filled with random uniform values
+my_matrix <- matrix(runif(4^2), nrow=4)
+# 100-element vector of TRUE or FALSE values
+my_logical <- runif(100)<0.5
+# 26-element vector of all the lower-case letters in random order
+my_letters <- sample(letters)
+# create a new list, which has the element[2,2] from the matrix, the second element of the logical vector, and the second element of the letters vector.
+my_list <- list(my_matrix[2,2], my_logical[2], my_letters[2])
+# check type of each element in my_list
+typeof(my_list[[1]]) # double
+typeof(my_list[[2]]) # logical
+typeof(my_list[[3]]) # char
+# convert my_list to vector
+my_vec <- unlist(my_list)
+# the data type of this vector is char
+typeof(my_vec)
+```
+
+# Q3
+```{r}
+# 3. Create a data frame with two variables (= columns) and 26 cases (= rows).
+my_unis <- runif(26, min=0, max=10)
+my_letters <- sample(LETTERS)
+df <- data.frame(my_unis, my_letters)
+# select 4 random rows and replace the numerical values in those rows with NA
+df[sample(nrow(df), 4), 1] = NA
+# identify which rows have the missing values
+which(is.na(df[1]))
+# sort the second variable in alphabetical order
+df[order(df$my_letters),]
+# calculate the column mean for the first variable
+fst_var_mean <- mean(df$my_unis[!is.na(df$my_unis)])
+```

@@ -6,10 +6,13 @@ output: html_document
 
 This will be my personal website, eventually. 
 
-# Homework Gall
+# Homework Collections
 
 ## Homework 2
 [Homework 02](Homework_02.html)
 
 ## Homework 3
 [Homework 03](homework_3.html)
+
+## Homework 5
+[Homework 05](homework5.html)
