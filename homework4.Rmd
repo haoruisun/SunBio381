@@ -1,0 +1,69 @@
+---
+title: "Homework 4"
+author: "Haorui Sun"
+date: "2/23/2022"
+output: html_document
+---
+
+
+```{r}
+# 1.
+# assign values
+x <- 1.1
+a <- 2.2
+b <- 3.3
+
+# a. 
+x^(a^b)
+# b.
+(x^a)^b
+# c.
+3*x^3 + 2*x^2 + 1
+
+
+# 2. 
+# a.
+c(seq(8), rev(seq(7)))
+# b.
+rep(seq(5), 1:5)
+# c.
+rep(5:1, 1:5)
+
+
+# 3.
+# create the x and y coordinates
+cartesian_coord <- runif(2)
+# extract x and y values
+x <- cartesian_coord[1]
+y <- cartesian_coord[2]
+# calculate the r and theta to convert cartesian to polar coordinate
+r <- sqrt(x^2 + y^2)
+theta <- atan(y/x)
+polar_coord <- c(r, theta)
+
+
+# 4.
+# create the original queue
+queue <- c("sheep", "fox", "owl", "ant")
+# a. the serpent arrives and gets in line
+queue <- append(queue, 'serpent')
+# b. the sheep enters the ark
+queue <- queue[! queue %in% 'sheep']
+# c. the donkey arrives and talks his way to the front of the line
+queue <- append('donkey', queue)
+# d. the serpent gets impatient and leaves
+queue <- queue[! queue %in% 'serpent']
+# e. the owl gets bored and leaves
+queue <- queue[! queue %in% 'owl']
+# f. the aphid arrives and the ant invites him to cut in line
+queue <- append(queue, 'aphid', after=which(queue=='ant')-1)
+# g. determine the position of the aphid in the line
+pos <- which(queue=='aphid')
+
+
+# 5. 
+# create the vector
+vector <- seq(100)
+# remove desired values
+vector <- vector[(vector %% 2) & (vector %% 3) & (vector %% 7)]
+```

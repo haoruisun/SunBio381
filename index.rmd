@@ -14,5 +14,11 @@ This will be my personal website, eventually.
 ## Homework 3
 [Homework 03](homework_3.html)
 
+## Homework 4
+[Homework 04](homework4.html)
+
 ## Homework 5
 [Homework 05](homework5.html)
+
+## Homework 6
+[Homework 06](homework6.html)
