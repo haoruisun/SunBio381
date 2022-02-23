@@ -141,4 +141,5 @@ print(new_p1)
 ```{r}
 p1
 ```
+
 The two histogram profiles look pretty identical, so I think the model is doing a good job of simulating realistic data that match my original measurements. That is because the my realistic data is highly normal distributed.
