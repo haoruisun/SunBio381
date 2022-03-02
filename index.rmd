@@ -22,3 +22,6 @@ This will be my personal website, eventually.
 
 ## Homework 6
 [Homework 06](homework6.html)
+
+## Homework 7
+[Homework 07](homework7.html)
