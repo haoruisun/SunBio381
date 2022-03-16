@@ -1,0 +1,57 @@
+---
+title: "Homework 8"
+author: "Haorui Sun"
+date: "3/16/2022"
+output: html_document
+---
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+# Passage-of-Time Dysphoria
+
+Passage-of-Time Dysphoria (POTD) is a term to describe a generalizable and robust decline in mood during rest and simple tasks. In a recent study (unpublished) led by Dr. Jangraw, this POTD phenomena was investigated by hiring people to participant in either an online MTurk tasks or a moble app, where they would rate their moods along with doing tasks. The mood ratings were quantified by the linear mixed effects (LME) model with with terms for initial mood and mood slope as random effects that were fitted to each subject’s data. It has been found that the LME slope parameters for individual online and mobile app participants are normally distributed. 
+
+I hypothesize that the LME slope parameters for these two groups are significantly different. Therefore, I'd like to simulate two datasets that roughly account for LME slope parameters for these two cohorts shown in the experiment and analyze them. 
+
+### Initialize parameters
+```{r}
+library(boot)
+n <- 1000   # sample size
+online_mean <- -1.75
+online_sd <- 0.5
+mobile_mean <- -1.7
+mobile_sd <- 0.5
+```
+
+### Simulate the data
+```{r}
+online <- rnorm(n=n, mean=online_mean, sd=online_sd)
+mobile <- rnorm(n=n, mean=mobile_mean, sd=mobile_sd)
+part_ID <- seq_len(n)
+df <- data.frame(part_ID, online, mobile)
+data <- data.frame(data=c(online, mobile), 
+                  group=c(rep("online", n), rep("mobile", n)))
+head(df)
+```
+
+Since LME slope parameters are continuous and groups are categorical (online and mobile), I t-test analysis.
+
+### Plot the data and run t-test
+```{r}
+library(ggplot2)
+plot <- ggplot(data=df, aes(x=online, y=..density..)) +
+  geom_histogram(color="grey60",fill="chocolate3",size=0.2) + 
+  geom_histogram(aes(x=mobile, y=..density..),
+                 color="grey60",fill="steelblue4",size=0.2) +
+  geom_density(linetype="dotted",size=0.75) + 
+  geom_density(aes(x=mobile, y=..density..), linetype="dotted",size=0.75)
+print(plot)
+print(t.test(online, mobile))
+boxplot(data$data ~ data$group)
+```
+
+The difference between the groups can be very small (online_mean=-1.75, mobile_mean=-1.7) and they are still significantly different. However, with such small difference, the sample size has to be large enough (at least 1000) to obtain the p-value that's less than 0.05. 
+
+
+
+
