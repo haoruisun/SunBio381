@@ -28,3 +28,6 @@ This will be my personal website, eventually.
 
 ## Homework 8
 [Homework 08](homework8.html)
+
+## Homework 8
+[Homework 09](homework9.html)

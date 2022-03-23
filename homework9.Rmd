@@ -1,0 +1,114 @@
+---
+title: "Homework 9"
+author: "Haorui Sun"
+date: "3/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+## Functions
+```{r}
+#################################
+# FUNCTION: get_data
+# purpose: simulate two normal distributed datasets and return them in one
+#          dataframe
+# input: n, mean1, sd1, mean2, sd2
+# output: dataframe
+# -------------------------------
+sim_data <- function(n, mean1, sd1, mean2, sd2) {
+  data1 <- rnorm(n=n, mean=mean1, sd=sd1)
+  data2 <- rnorm(n=n, mean=mean2, sd=sd2)
+  part_ID <- seq_len(n)
+  df <- data.frame(part_ID, data1, data2)
+  return(df)
+}
+
+#################################
+# FUNCTION: calculate_p
+# purpose: calculate p-value of the two classes
+# input: dataframe
+# output: p_var
+# -------------------------------
+calculate_p <- function(df) {
+  return(t.test(df$data1, df$data2)$p.value)
+}
+
+#################################
+# FUNCTION: nplot
+# purpose: plot the normal distribution of two dataset
+# input: dataframe
+# output: create graph
+# -------------------------------
+nplot <- function(df) {
+  plot <- ggplot(data=df, aes(x=data1, y=..density..)) +
+    geom_histogram(color="grey60",fill="chocolate3",size=0.2, alpha=0.8) + 
+    geom_histogram(aes(x=data2, y=..density..),
+                   color="grey60",fill="steelblue4",size=0.2, alpha=0.8) +
+    geom_density(linetype="dotted",size=0.75) + 
+    geom_density(aes(x=data2, y=..density..), linetype="dotted",size=0.75)
+  print(plot)
+}
+
+#################################
+# FUNCTION: bplot
+# purpose: create a longder dataframe and plot the two datasets in the boxplot
+# input: dataframe
+# output: create graph
+# -------------------------------
+bplot <- function(df) {
+  long_df <- pivot_longer(df, cols= data1:data2,
+                          names_to = "group",
+                          values_to= "data")
+  boxplot(long_df$data ~ long_df$group)
+}
+
+#################################
+# NEW ADDED FUNC
+# FUNCTION: CI_95
+# purpose: extract the 95 percent confidence interval from the t-test
+# input: dataframe
+# output: 95CI interval
+# -------------------------------
+CI_95 <- function(df) {
+  return(t.test(df$data1, df$data2)$conf.int[1:2])
+}
+```
+
+## Global variables
+```{r}
+n <- 1000   # sample size
+mean1 <- -1.75
+sd1 <- 0.5
+mean2 <- -1.7
+sd2 <- 0.5
+```
+
+## Body
+```{r}
+# load library ------------------------------
+library(tidyverse)
+# simulate data ------------------------------
+df <- sim_data(n, mean1, sd1, mean2, sd2)
+head(df)
+# ANOVA test ------------------------------
+cat("The p-value of two datasets is:", calculate_p(df))
+cat("The 95 confidence interval is:", CI_95(df))
+# plot normal distribution ------------------------------
+nplot(df)
+# box plot ------------------------------
+bplot(df)
+```
+
+## Run the simulation multiple times and record the p-values
+```{r}
+set.seed(22)
+p_vars <- vector()
+for(i in 1:1000){
+  df <- sim_data(n, mean1, sd1, mean2, sd2)
+  p_vars <- append(p_vars, calculate_p(df))
+}
+hist(p_vars)
+```
