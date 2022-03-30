@@ -1,0 +1,141 @@
+---
+title: "Homework 10"
+author: "Haorui Sun"
+date: "3/30/2022"
+output: html_document
+---
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+## 1. 
+```{r}
+#################################
+# FUNCTION: count0
+# purpose: counter the number of zeros in a numeric vector
+# input: numeric vector
+# output: the number of zeros
+# -------------------------------
+count0 <- function(num_vec) {
+  counter <- 0
+  for(i in num_vec) {
+    if (i==0) {
+     counter <- counter + 1 
+    }
+  }
+  return(counter)
+}
+```
+
+Testing
+```{r}
+count0(1:5)
+count0(0:5)
+count0(c(0, 0, 1))
+```
+
+## 2. 
+```{r}
+#################################
+# FUNCTION: re_count0
+# purpose: counter the number of zeros in a single line of code
+# input: numeric vector
+# output: the number of zeros
+# -------------------------------
+re_count0 <- function(num_vec) {
+  return(length(num_vec[num_vec==0]))
+}
+```
+
+Testing
+```{r}
+re_count0(1:5)
+re_count0(0:5)
+re_count0(c(0, 0, 1))
+```
+
+## 3. 
+```{r}
+#################################
+# FUNCTION: gen_mat
+# purpose: generate a matrix in which each element is the product of the 
+#          row number x the column number
+# input: the number of rows and columns 
+# output: desired matrix
+# -------------------------------
+gen_mat <- function(row, col) {
+  mat <- matrix(rep(0, row*col), nrow=row, ncol=col)
+  for(i in 1:row){
+    for(j in 1:col){
+      mat[i, j] <- i*j
+    }
+  }
+  return(mat)
+}
+```
+
+Testing
+```{r}
+gen_mat(1, 1)
+gen_mat(4, 5)
+```
+
+## 4. 
+### a. Simulate the dataset
+```{r}
+# create treatment groups
+groups <- c(rep("group1",10), rep("group2",10), rep("group3",10))
+# create response variable
+z <- c(runif(min=20, max=30, n=10), 
+       runif(min=40, max=70, n=10), 
+       runif(min=60, max=90, n=10))
+# combine into data frame
+df <- data.frame(groups=groups, res=z)
+```
+
+### b. Create the function
+```{r}
+#################################
+# FUNCTION: df_shuffle
+# purpose: reshuffles the response variable, and calculates the mean 
+#          of each group
+# input: dataframe
+# output: mean of each group in a vector of length 3
+# -------------------------------
+df_shuffle <- function(df) {
+  # reshuffle the dataframe
+  df_sim <- df
+  df_sim$res <- sample(df_sim$res)
+  # calculate the mean of each group
+  mean <- tapply(df_sim$res, df_sim$groups, mean)
+  return(mean)
+}
+```
+
+### c. Loop 100 times
+```{r}
+# declare the dataframe
+df_mean <- data.frame(matrix(ncol=4,nrow=0, 
+                             dimnames=list(NULL, c("rep", 
+                                                   "g1_mean", 
+                                                   "g2_mean",
+                                                   "g3_mean"))))
+# repeat reshuffle 100 times
+for(i in 1:100){
+  df_mean[i,] <- c(i, df_shuffle(df))
+}   
+```
+
+### d. Plot the results
+```{r}
+library(ggplot2)
+plot <- ggplot(data=df_mean, aes(x=g1_mean, y=..density..)) + 
+  geom_histogram(color="grey60",fill="chocolate3",size=0.2, alpha=0.8) + 
+  geom_histogram(aes(x=g2_mean, y=..density..),
+                 color="grey60",fill="steelblue4",size=0.2, alpha=0.8) +
+  geom_histogram(aes(x=g3_mean, y=..density..),
+                 color="grey60",fill="forestgreen",size=0.2, alpha=0.8) +
+  labs(x="reshuffled means")
+print(plot)
+```
+The reshuffled data means are normally distributed. 
