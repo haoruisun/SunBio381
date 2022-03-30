@@ -138,4 +138,5 @@ plot <- ggplot(data=df_mean, aes(x=g1_mean, y=..density..)) +
   labs(x="reshuffled means")
 print(plot)
 ```
+
 The reshuffled data means are normally distributed. 
