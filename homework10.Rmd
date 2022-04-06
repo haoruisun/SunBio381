@@ -110,6 +110,62 @@ df_shuffle <- function(df) {
   mean <- tapply(df_sim$res, df_sim$groups, mean)
   return(mean)
 }
+
+##################################################
+# function: shuffle_data
+# randomize data for regression analysis
+# input: 2-column data frame (x_var,y_var)
+# output: 2-column data frame (x_var,y_var)
+#------------------------------------------------- 
+shuffle_data <- function(z) {             
+  z[,2] <- sample(z[,2]) # use sample function with defaults to reshuffle
+  return(z)
+}
+
+##################################################
+# function: get_metric
+# calculate metric for randomization test
+# input: 2-column data frame for regression
+# output: regression slope
+#------------------------------------------------- 
+get_metric <- function(z) {               
+  . <- lm(z[,2]~z[,1])
+  . <- summary(.)
+  . <- .$coefficients[2,1]
+  
+  slope <- .
+  return(slope)
+}
+
+##################################################
+# function: get_pval
+# calculate p value from simulation
+# input: list of observed metric, and vector of simulated metrics
+# output: lower, upper tail probability values
+#------------------------------------------------- 
+get_pval <- function(z) {
+  p_lower <- mean(z[[2]]<=z[[1]])
+  p_upper <- mean(z[[2]]>=z[[1]])
+  return(c(pl=p_lower,pu=p_upper))
+}
+
+##################################################
+# function: plot_ran_test
+# create ggplot of histogram of simulated values
+# input: list of observed metric and vector of simulated metrics
+# output: saved ggplot graph
+#------------------------------------------------- 
+plot_ran_test <- function(z) {
+  df <- data.frame(ID=seq_along(z[[2]]),sim_x=z[[2]])
+  
+  p1 <- ggplot(data=df) + 
+    aes(x=sim_x)
+  
+  p1 + geom_histogram(aes(fill=I("goldenrod"),
+                          color=I("black"))) +
+    geom_vline(aes(xintercept=z[[1]],
+                   col="blue")) 
+}
 ```
 
 ### c. Loop 100 times
@@ -134,9 +190,23 @@ plot <- ggplot(data=df_mean, aes(x=g1_mean, y=..density..)) +
   geom_histogram(aes(x=g2_mean, y=..density..),
                  color="grey60",fill="steelblue4",size=0.2, alpha=0.8) +
   geom_histogram(aes(x=g3_mean, y=..density..),
-                 color="grey60",fill="forestgreen",size=0.2, alpha=0.8) +
-  labs(x="reshuffled means")
+                 color="grey60",fill="forestgreen",size=0.2, alpha=0.8)
 print(plot)
 ```
-
 The reshuffled data means are normally distributed. 
+
+### Plot p-value histrogram
+```{r}
+n_sim <- 1000
+x_sim <- rep(NA,n_sim) # vector of simulated slopes
+df1 <- df[, 1:2]
+x_obs <- get_metric(df1)
+for (i in seq_len(n_sim)) {
+  x_sim[i] <- get_metric(shuffle_data(df1))
+}
+slopes <- list(x_obs,x_sim)
+get_pval(slopes)
+plot_ran_test(slopes)
+```
+
+The p-value for the standard test versus the p value estimated from randomization test are very different regardless of the number of replications. This difference represents the significant difference between two original datasets.
