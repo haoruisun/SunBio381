@@ -1,0 +1,70 @@
+---
+title: "Homework 12"
+author: "Haorui Sun"
+date: "4/13/2022"
+output: html_document
+---
+
+## Packages and dataset
+
+I use the built-in dataset `Iris` in R for this assignment. 
+
+```{r}
+library(ggplot2)
+library(ggthemes)
+library(patchwork)
+library(ggpubr)
+df <- iris
+head(df)
+```
+
+## Basic plotting
+
+Since the dataset is about the dimensions of sepal and petal for different iris species, I'd like to plot the data in the box plots. 
+
+```{r}
+qplot(x=df$Species, y=df$Sepal.Length, geom="boxplot")
+```
+
+## Advanced plotting
+```{r}
+#################################
+# FUNCTION: m_boxplot
+# purpose: generate the boxplot for input data
+# input: x and y
+# output: ggplot object
+# -------------------------------
+m_boxplot <- function(df, x, y, labels) {
+  
+  my_comparisons <- list( c("setosa", "versicolor"),
+                          c("versicolor", "virginica"),
+                          c("setosa", "virginica"))
+  
+  p <- ggboxplot(df, x=x, y=y)+
+    stat_compare_means(comparisons=my_comparisons) +
+    theme_classic() + xlab(labels[1]) + ylab(labels[2]) 
+  
+  return(p)
+}
+```
+
+```{r}
+p1 <- m_boxplot(df, x="Species", y="Sepal.Length", 
+                labels=c("Species", "Sepal Length"))
+p2 <- m_boxplot(df, x="Species", y="Sepal.Width", 
+                labels=c("Species", "Sepal Width"))
+p3 <- m_boxplot(df, x="Species", y="Petal.Length", 
+                labels=c("Species", "Petal Length"))
+p4 <- m_boxplot(df, x="Species", y="Petal.Width", 
+                labels=c("Species", "Petal Width"))
+print(p1)
+
+patchwork <- (p1 + p2) / (p3 + p4) + 
+  plot_annotation(title = 'Iris Dataset')
+print(patchwork)
+
+ggsave(plot = patchwork, width = 12, height = 9, dpi = 300, 
+       filename = "Iris.pdf")
+```
+
+Note that p-values are partially blocked out in web viewer, while they are intact in the saved pdf. 
